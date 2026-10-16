@@ -2,24 +2,18 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
-    print("Home route accessed")
-    return render_template('register.html')
+    return render_template('registration.html')
 
 
-@app.route('/register', methods=['POST'])
-def register():
-    name = request.form['name']
+@app.route('/submit', methods=['POST'])
+def submit():
+    username = request.form['username']
 
-    year = request.form['year']
-
-    return render_template(
-        'successful.html',
-        name=name,
-        year=year
-    )
+    return render_template('success.html', name=username)
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
