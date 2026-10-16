@@ -1,3 +1,4 @@
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -28,7 +29,7 @@ def test_registration_page(setup_teardown):
         "Student Registration Form"
 
 
-# Test 2: All form fields are available
+# Test 2: Name field is available
 def test_registration_fields(setup_teardown):
     driver = setup_teardown
     driver.get("http://127.0.0.1:5000/")
