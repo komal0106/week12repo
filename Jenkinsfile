@@ -1,76 +1,61 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_USERNAME = "komal0106"
-        DOCKER_PASSWORD = "guddu2006"
-
-        IMAGE_NAME = "komal0106/week9repo"
-        IMAGE_TAG = "latest"
-    }
-
     stages {
 
-        stage('Checkout') {
+        stage('Run Selenium Tests with pytest') {
             steps {
-                echo "Checking out source code..."
-                checkout scm
+                    echo "Running Selenium Tests using pytest"
+
+                    // Install Python dependencies
+                    bat 'pip install -r requirements.txt'
+
+                    //  Start Flask app in background
+                    bat 'start /B python app.py'
+
+                    // Wait a few seconds for the server to start
+                    bat 'ping 127.0.0.1 -n 5 > nul'
+
+                    // Run tests using pytest
+
+                    bat 'python -m pytest -v'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker Image..."
-                bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
+                echo "Build Docker Image"
+                bat "docker build -t week12image:latest ."
             }
         }
-
         stage('Docker Login') {
             steps {
-                echo "Logging in to Docker Hub..."
-
-                bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                  bat 'docker login -u komal0106 -p guddu2006'
+                }
             }
-        }
-
-        stage('Push Docker Image to Docker Hub') {
+        stage('push Docker Image to Docker Hub') {
             steps {
-                echo "Pushing Docker Image to Docker Hub..."
+                echo "push Docker Image to Docker Hub"
+                bat "docker tag week12image:latest komal0106/week12repo:latest"
 
-                bat "docker push %IMAGE_NAME%:%IMAGE_TAG%"
+                bat "docker push komal0106/week12repo:latest"
+
             }
         }
-
         stage('Deploy to Kubernetes') {
             steps {
-                echo "Deploying application to Kubernetes..."
-
-                bat "kubectl apply -f deployment.yaml --validate=false"
-                bat "kubectl apply -f service.yaml"
-            }
-        }
-
-        stage('Verify Kubernetes Deployment') {
-            steps {
-                echo "Checking Kubernetes resources..."
-
-                bat "kubectl get deployments"
-                bat "kubectl get pods"
-                bat "kubectl get services"
+                    // apply deployment & service
+                    bat 'kubectl apply -f deployment.yaml --validate=false'
+                    bat 'kubectl apply -f service.yaml'
             }
         }
     }
-
     post {
         success {
-            echo "PIPELINE COMPLETED SUCCESSFULLY!"
-            echo "Docker Image: %IMAGE_NAME%:%IMAGE_TAG%"
-            echo "Kubernetes deployment completed successfully!"
+            echo 'Pipeline completed successfully!'
         }
-
         failure {
-            echo "PIPELINE FAILED!"
-            echo "Please check the Jenkins console output."
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
