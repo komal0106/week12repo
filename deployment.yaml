@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: week9-app
+  name: week12-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: week9-app
+      app: week12-app
   template:
     metadata:
       labels:
-        app: week9-app
+        app: week12-app
     spec:
       containers:
-        - name: week9-app
-          image: komal0106/week9repo:latest
+        - name: week12-app
+          image: komal0106/week9repo:week12
           ports:
             - containerPort: 5000
