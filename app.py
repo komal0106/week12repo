@@ -8,10 +8,13 @@ def index():
     return render_template('register.html')
 
 
-@app.route('/submit', methods=['POST'])
-def submit():
-    username = request.form['username']
-    return render_template('successful.html', name=username)
+@app.route('/register', methods=['POST'])
+def register():
+    return render_template(
+        'successful.html',
+        name=request.form['name'],
+        course=request.form['course'],
+    )
 
 
 if __name__ == '__main__':
