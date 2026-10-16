@@ -1,1 +1,4 @@
 flask
+selenium
+pytest
+webdriver-manager
